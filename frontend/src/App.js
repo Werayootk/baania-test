@@ -1,24 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Layout } from "antd";
+
+import NavBarDatabase from "./components/NavBarDatabase/NavBarDatabase" 
+import DropDownPostCode from "./components/DropDownPostCode/DropDownPostCode"
+import TableHouseList from "./components/TableHouseList/TableHouseList"
+
+const { Header, Footer, Content } = Layout;
+
+const headerStyle = {
+  maxHeight: 170,
+  backgroundColor: "#F4F7FC",
+};
+const contentStyle = {
+  backgroundColor: "#fff",
+};
+const footerStyle = {
+  textAlign: "center",
+  color: "#fff",
+  backgroundColor: "#F4F7FC",
+};
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout>
+      <Header style={headerStyle}>
+        <NavBarDatabase />
+      </Header>
+      <Content style={contentStyle}>
+        <TableHouseList />
+      </Content>
+      <Footer style={footerStyle}>
+        <DropDownPostCode />
+      </Footer>
+    </Layout>
   );
 }
 
