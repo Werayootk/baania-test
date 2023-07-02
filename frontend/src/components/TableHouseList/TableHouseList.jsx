@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button, Modal, Form, Input } from "antd";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 import baaniaServices from "../../services/baaniaServices";
 import "./TableHouseList.css";
 
 const { Item } = Form;
+const { TextArea } = Input;
 
 const TableHouseList = () => {
   const [form] = Form.useForm();
@@ -34,13 +35,18 @@ const TableHouseList = () => {
       width: 189,
       renderCell: (params) => {
         return (
-          <div style={{display: "flex", gap: "10px"}}>
+          <div style={{ display: "flex", gap: "10px" }}>
             <Button
               variant="outlined"
               color="primary"
               size="small"
               onClick={() => handleButtonClick(params)}
-              style={{borderRadius: "40px", color:"#FF9900", backgroundColor: "#FFF7E6", border: "1px"}}
+              style={{
+                borderRadius: "40px",
+                color: "#FF9900",
+                backgroundColor: "#FFF7E6",
+                border: "1px",
+              }}
             >
               VIEW DETAIL
             </Button>
@@ -49,7 +55,12 @@ const TableHouseList = () => {
               color="primary"
               size="small"
               onClick={() => handleDelButtonClick(params)}
-              style={{borderRadius: "40px", color:"#B93E5C", backgroundColor: "#FDF4F7", border: "1px"}}
+              style={{
+                borderRadius: "40px",
+                color: "#B93E5C",
+                backgroundColor: "#FDF4F7",
+                border: "1px",
+              }}
             >
               DELETE
             </Button>
@@ -58,10 +69,9 @@ const TableHouseList = () => {
       },
     },
   ];
-  
+
   const handleButtonClick = (params) => {
     // handle button click for a specific row
-    console.log("Button clicked for row:", params.row);
     setIsVisibleModalUpdate(!isVisibleModalUpdate);
     setDataUpdate(params.row);
   };
@@ -70,59 +80,92 @@ const TableHouseList = () => {
     //update
     let newData = {
       id: dataUpdate.id,
-      name: values.name,
-      post_code: values.post_code,
-      price: values.price,
-      desc: values.desc
-    }
-    await baaniaServices.updateHome(newData.id, newData).then((res) => {
-      setIsVisibleModalSuccess(!isVisibleModalSuccess);
-    }).catch((err) => {
-      console.error(err);
-      setIsVisibleModalFail(!isVisibleModalFail);
-    })
-  }
+      name: values.name || dataUpdate.name,
+      post_code: values.post_code || dataUpdate.post_code,
+      price: values.price || dataUpdate.price,
+      desc: values.desc || dataUpdate.desc,
+    };
+    await baaniaServices
+      .updateHome(newData.id, newData)
+      .then((res) => {
+        setIsVisibleModalSuccess(!isVisibleModalSuccess);
+        setIsVisibleModalUpdate(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setIsVisibleModalFail(!isVisibleModalFail);
+        setIsVisibleModalUpdate(false);
+      }).finally(() => {
+        let params = `?skip${paginationModel.page}&take${paginationModel.pageSize}`;
+        baaniaServices
+          .getHome(params)
+          .then((res) => {
+            setDataSource(res.data.payload);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      });
+  };
 
   const onFinishCreate = async (values) => {
     //create
-    console.log(values);
-    await baaniaServices.createHome(values).then((res) => {
-      setIsVisibleModalSuccess(!isVisibleModalSuccess);
-    }).catch((err) => {
-      console.error(err);
-      setIsVisibleModalFail(!isVisibleModalFail);
-    })
-  }
-  
+    await baaniaServices
+      .createHome(values)
+      .then((res) => {
+        setIsVisibleModalSuccess(!isVisibleModalSuccess);
+        setIsVisibleModalCreate(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setIsVisibleModalFail(!isVisibleModalFail);
+        setIsVisibleModalCreate(false);
+      })
+      .finally(() => {
+        let params = `?skip${paginationModel.page}&take${paginationModel.pageSize}`;
+        baaniaServices
+          .getHome(params)
+          .then((res) => {
+            setDataSource(res.data.payload);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      });
+  };
+
   const handleDelButtonClick = async (params) => {
     // handle button click for a specific row
-    console.log("Button Delete clicked for row:", params.row);
-    await baaniaServices.deleteHome(params.id).then((res) => {
-      console.log("deleted")
-    }).catch((err) => {
-      console.erro(err)
-    }).finally(() => {
-      let params = `?skip${paginationModel.page}&take${paginationModel.pageSize}`;
-      baaniaServices.getHome(params).then((res) => {
-      console.log(res.data)
-      setDataSource(res.data.payload)
-    }).catch((err) => {
-      console.error(err)
-    })
-    })
+    await baaniaServices
+      .deleteHome(params.id)
+      .then((res) => {})
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        let params = `?skip${paginationModel.page}&take${paginationModel.pageSize}`;
+        baaniaServices
+          .getHome(params)
+          .then((res) => {
+            setDataSource(res.data.payload);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      });
   };
 
   const onClickCreate = () => {
     setIsVisibleModalCreate(!isVisibleModalCreate);
-  }
+  };
 
   const onClickSuccess = () => {
     setIsVisibleModalSuccess(!isVisibleModalSuccess);
-  }
+  };
 
   const onClickFail = () => {
     setIsVisibleModalFail(!isVisibleModalFail);
-  }
+  };
 
   const handleCancel = () => {
     setIsVisibleModalCreate(false);
@@ -131,12 +174,14 @@ const TableHouseList = () => {
 
   useEffect(() => {
     let params = `?skip${paginationModel.page}&take${paginationModel.pageSize}`;
-    baaniaServices.getHome(params).then((res) => {
-      console.log(res.data)
-      setDataSource(res.data.payload)
-    }).catch((err) => {
-      console.error(err)
-    })
+    baaniaServices
+      .getHome(params)
+      .then((res) => {
+        setDataSource(res.data.payload);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }, []);
 
   return (
@@ -150,7 +195,11 @@ const TableHouseList = () => {
         }}
       >
         <p style={{ fontWeight: "bold" }}>HOUSE LIST</p>
-        <Button type="primary" style={{ background: "#22BB66", width: "150px" }} onClick={onClickCreate}>
+        <Button
+          type="primary"
+          style={{ background: "#22BB66", width: "150px" }}
+          onClick={onClickCreate}
+        >
           CREATE
         </Button>
       </div>
@@ -171,8 +220,8 @@ const TableHouseList = () => {
       <Modal
         centered
         open={isVisibleModalCreate}
-        bodyStyle={{ height: "60vh" }}
-        width="90vw"
+        bodyStyle={{ height: "363px" }}
+        width="700px"
         style={{ textAlign: "center" }}
         closable={false}
         footer={[
@@ -183,84 +232,91 @@ const TableHouseList = () => {
             type="primary"
             key="submit"
             onClick={form.submit}
-            style={{ backgroundColor: '#22BB66' }}
+            style={{ backgroundColor: "#22BB66" }}
           >
             CREATE
           </Button>,
         ]}
         destroyOnClose={true}
       >
-         <Form
+        <Form
           labelCol={{ xs: { span: 6 } }}
           wrapperCol={{ xs: { span: 12 } }}
           form={form}
           onFinish={onFinishCreate}
         >
-          <Form.Item
-            name="name"
-            label="name"
-          >
-            <Input placeholder={"Name"}/>
+          <p style={{ fontWeight: "bold" }}>Create</p>
+          <Form.Item name="name" label="Name">
+            <Input placeholder={"Name"} />
           </Form.Item>
 
-          <Form.Item
-            name="post_code"
-            label="post_code"
-          >
-            <Input placeholder={"Post Code"}/>
+          <Form.Item name="post_code" label="Post Code">
+            <Input placeholder={"Post Code"} />
           </Form.Item>
 
-          <Form.Item
-            name="price"
-            label="price"
-          >
+          <Form.Item name="price" label="Price">
             <Input placeholder={"Price"} />
           </Form.Item>
 
-          <Form.Item
-            name="desc"
-            label="desc"
-          >
-            <Input  placeholder={"Description"}/>
+          <Form.Item name="desc" label="Description">
+            <TextArea
+              maxLength={100}
+              style={{ height: 160, marginBottom: 24 }}
+              placeholder="Description"
+            />
           </Form.Item>
         </Form>
       </Modal>
       <Modal
-          centered
-          open={isVisibleModalSuccess}
-          bodyStyle={{ height: "300px" }}
-          width="331px"
-          style={{ textAlign: "center", alignItems: "center" }}
-          closable={false}
-          footer={[
-            <Button key="back" onClick={onClickSuccess}>
-              CONTINUE
-            </Button>,
-          ]}
+        centered
+        open={isVisibleModalSuccess}
+        bodyStyle={{ height: "300px" }}
+        width="331px"
+        style={{ textAlign: "center", alignItems: "center" }}
+        closable={false}
+        footer={[
+          <Button key="back" onClick={onClickSuccess}>
+            CONTINUE
+          </Button>,
+        ]}
         destroyOnClose={true}
       >
         <div>
-          <CheckCircleIcon style={{color: "#22BB66", width: "75px", height: "75px", marginTop: "44px"}}/>
+          <CheckCircleIcon
+            style={{
+              color: "#22BB66",
+              width: "75px",
+              height: "75px",
+              marginTop: "44px",
+            }}
+          />
           <p>Succuess</p>
           <p>Create a Successful!</p>
         </div>
       </Modal>
       <Modal
-          centered
-          open={isVisibleModalFail}
-          bodyStyle={{ height: "300px" }}
-          width="331px"
-          style={{ textAlign: "center", alignItems: "center" }}
-          closable={false}
-          footer={[
-            <Button key="back" onClick={onClickFail}>
-              TRY AGAIN
-            </Button>,
-          ]}
+        centered
+        open={isVisibleModalFail}
+        bodyStyle={{ height: "300px" }}
+        width="331px"
+        style={{ textAlign: "center", alignItems: "center" }}
+        closable={false}
+        footer={[
+          <Button key="back" onClick={onClickFail}>
+            TRY AGAIN
+          </Button>,
+        ]}
         destroyOnClose={true}
       >
         <div>
-          <CancelIcon style={{color: "#B93E5C", width: "75px", height: "75px", marginTop: "44px"}}/>
+          <CancelIcon
+            style={{
+              color: "#B93E5C",
+              width: "75px",
+              height: "75px",
+              marginTop: "44px",
+            }}
+          />
           <p>FAIL</p>
           <p>Let’s try one more again</p>
         </div>
@@ -268,8 +324,8 @@ const TableHouseList = () => {
       <Modal
         centered
         open={isVisibleModalUpdate}
-        bodyStyle={{ height: "60vh" }}
-        width="90vw"
+        bodyStyle={{ height: "363px" }}
+        width="700px"
         style={{ textAlign: "center" }}
         closable={false}
         footer={[
@@ -280,7 +336,7 @@ const TableHouseList = () => {
             type="primary"
             key="submit"
             onClick={form.submit}
-            style={{ backgroundColor: '#F6A623' }}
+            style={{ backgroundColor: "#F6A623" }}
           >
             UPDATE
           </Button>,
@@ -293,32 +349,29 @@ const TableHouseList = () => {
           form={form}
           onFinish={onFinishUpdate}
         >
-          <Form.Item
-            name="name"
-            label="name"
-          >
-            <Input placeholder={dataUpdate.name} value={dataUpdate.name}/>
+          <p style={{ fontWeight: "bold" }}>Item Detail - {dataUpdate.id}</p>
+          <Form.Item name="name" label="Name">
+            <Input placeholder={dataUpdate.name} value={dataUpdate.name} />
           </Form.Item>
 
-          <Form.Item
-            name="post_code"
-            label="post_code"
-          >
-            <Input placeholder={dataUpdate.post_code} value={dataUpdate.post_code}/>
+          <Form.Item name="post_code" label="Post Code">
+            <Input
+              placeholder={dataUpdate.post_code}
+              value={dataUpdate.post_code}
+            />
           </Form.Item>
 
-          <Form.Item
-            name="price"
-            label="price"
-          >
-            <Input placeholder={dataUpdate.price} value={dataUpdate.price}/>
+          <Form.Item name="price" label="Price">
+            <Input placeholder={dataUpdate.price} value={dataUpdate.price} />
           </Form.Item>
 
-          <Form.Item
-            name="desc"
-            label="desc"
-          >
-            <Input  placeholder={dataUpdate.desc} value={dataUpdate.desc}/>
+          <Form.Item name="desc" label="Description">
+            <TextArea
+              maxLength={100}
+              style={{ height: 160, marginBottom: 24 }}
+              placeholder={dataUpdate.desc}
+              value={dataUpdate.desc}
+            />
           </Form.Item>
         </Form>
       </Modal>

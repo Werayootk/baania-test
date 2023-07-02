@@ -28,7 +28,6 @@ const DropDownPostCode = () => {
     await baaniaService
       .getPostCode()
       .then((res) => {
-        console.log(res.data.payload);
         setPostCode(
           res.data.payload.map((item) => {
             return {
@@ -40,9 +39,7 @@ const DropDownPostCode = () => {
       })
       .catch((err) => {
         console.error(err);
-      }).finally(() => {
-        console.log(postCode);
-      });
+      })
   };
 
   useEffect(() => {
