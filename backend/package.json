@@ -18,7 +18,8 @@
       "nodemon": "^2.0.22",
       "pg": "^8.4.0",
       "reflect-metadata": "^0.1.13",
-      "typeorm": "0.3.17"
+      "typeorm": "0.3.17",
+      "util": "^0.12.5"
    },
    "scripts": {
       "start": "ts-node src/index.ts && nodemon --transpile-only src/index.ts",
