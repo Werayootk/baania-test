@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Button, Form, Input } from "antd";
 
 import baaniaServices from "../../services/baaniaServices";
-import "./NavBarDatabase.css";
 
 const NavBarDatabase = () => {
   return (

@@ -6,7 +6,6 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
 import baaniaService from "../../services/baaniaServices";
-import "./DropDownPostCode.css";
 
 const DropDownPostCode = () => {
   const [setshow, setSetshow] = useState(false);
