@@ -261,7 +261,7 @@ const TableHouseList = () => {
           <Form.Item name="desc" label="Description">
             <TextArea
               maxLength={100}
-              style={{ height: 160, marginBottom: 24 }}
+              style={{ height: 85, marginBottom: 24 }}
               placeholder="Description"
             />
           </Form.Item>
@@ -368,7 +368,7 @@ const TableHouseList = () => {
           <Form.Item name="desc" label="Description">
             <TextArea
               maxLength={100}
-              style={{ height: 160, marginBottom: 24 }}
+              style={{ height: 85, marginBottom: 24 }}
               placeholder={dataUpdate.desc}
               value={dataUpdate.desc}
             />
