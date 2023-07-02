@@ -34,20 +34,22 @@ const TableHouseList = () => {
       width: 189,
       renderCell: (params) => {
         return (
-          <div>
+          <div style={{display: "flex", gap: "10px"}}>
             <Button
               variant="outlined"
               color="primary"
               size="small"
               onClick={() => handleButtonClick(params)}
+              style={{borderRadius: "40px", color:"#FF9900", backgroundColor: "#FFF7E6", border: "1px"}}
             >
-              DETAIL
+              VIEW DETAIL
             </Button>
             <Button
               variant="outlined"
               color="primary"
               size="small"
               onClick={() => handleDelButtonClick(params)}
+              style={{borderRadius: "40px", color:"#B93E5C", backgroundColor: "#FDF4F7", border: "1px"}}
             >
               DELETE
             </Button>
@@ -144,11 +146,11 @@ const TableHouseList = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          gap: "10px",
+          gap: "295px",
         }}
       >
         <p style={{ fontWeight: "bold" }}>HOUSE LIST</p>
-        <Button type="primary" style={{ background: "#22BB66" }} onClick={onClickCreate}>
+        <Button type="primary" style={{ background: "#22BB66", width: "150px" }} onClick={onClickCreate}>
           CREATE
         </Button>
       </div>
@@ -226,9 +228,9 @@ const TableHouseList = () => {
       <Modal
           centered
           open={isVisibleModalSuccess}
-          bodyStyle={{ height: "60vh" }}
-          width="90vw"
-          style={{ textAlign: "center" }}
+          bodyStyle={{ height: "300px" }}
+          width="331px"
+          style={{ textAlign: "center", alignItems: "center" }}
           closable={false}
           footer={[
             <Button key="back" onClick={onClickSuccess}>
@@ -237,14 +239,18 @@ const TableHouseList = () => {
           ]}
         destroyOnClose={true}
       >
-        <div><CheckCircleIcon/>Succuess</div>
+        <div>
+          <CheckCircleIcon style={{color: "#22BB66", width: "75px", height: "75px", marginTop: "44px"}}/>
+          <p>Succuess</p>
+          <p>Create a Successful!</p>
+        </div>
       </Modal>
       <Modal
           centered
           open={isVisibleModalFail}
-          bodyStyle={{ height: "60vh" }}
-          width="90vw"
-          style={{ textAlign: "center" }}
+          bodyStyle={{ height: "300px" }}
+          width="331px"
+          style={{ textAlign: "center", alignItems: "center" }}
           closable={false}
           footer={[
             <Button key="back" onClick={onClickFail}>
@@ -253,7 +259,11 @@ const TableHouseList = () => {
           ]}
         destroyOnClose={true}
       >
-        <div><CancelIcon/>FAIL</div>
+        <div>
+          <CancelIcon style={{color: "#B93E5C", width: "75px", height: "75px", marginTop: "44px"}}/>
+          <p>FAIL</p>
+          <p>Let’s try one more again</p>
+        </div>
       </Modal>
       <Modal
         centered

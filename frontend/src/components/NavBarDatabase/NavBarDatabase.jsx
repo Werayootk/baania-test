@@ -23,7 +23,7 @@ const NavBarDatabase = () => {
         <Input placeholder="8000" />
       </Form.Item>
       <Form.Item style={{ marginTop: "25px" }}>
-        <Button type="primary">CONNECT</Button>
+        <Button type="primary" style={{ width: "150px" }}>CONNECT</Button>
       </Form.Item>
     </Form>
   );

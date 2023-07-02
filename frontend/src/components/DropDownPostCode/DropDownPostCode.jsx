@@ -66,7 +66,7 @@ const DropDownPostCode = () => {
         </FormControl>
       </Box>
       {setshow && (
-        <div>
+        <div style={{color: "#0F6FDE", fontWeight: "bold"}}>
           <p>average: {showValue.average}</p> <p>median: {showValue.median}</p>
         </div>
       )}
